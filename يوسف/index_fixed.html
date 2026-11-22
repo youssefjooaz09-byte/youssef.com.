@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Youssef Rady (YOUSSEF.DEV) — Aspiring Software Engineer and Computer Science & AI student at Beni Suef University focused on Software Engineering, Artificial Intelligence, and Cybersecurity." />
+  <meta name="keywords" content="Youssef Rady, YOUSSEF.DEV, Software Engineer, Artificial Intelligence, Cybersecurity, Web Development, Beni Suef University" />
+  <title>YOUSSEF.DEV | Advanced Futuristic Portfolio — Youssef Rady</title>
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Three.js, GSAP & Vanilla Tilt -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
+
+  <style>
+    :root {
+      --bg-navy: #0B1020;
+      --bg-surface: rgba(17, 25, 48, 0.65);
+      --primary-blue: #4F8CFF;
+      --secondary-purple: #9B6BFF;
+      --accent-cyan: #38D6E8;
+      --text-soft: #F4F7FF;
+      --text-muted: #9AA6C8;
+      --border-glass: rgba(79, 140, 255, 0.24);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-navy);
+      color: var(--text-soft);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow-x: hidden;
+      line-height: 1.65;
+    }
+
+    h1, h2, h3, .font-display {
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    /* Preloader */
+    #preloader {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: var(--bg-navy);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+    #preloader.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+    .loader-ring {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      border: 3px solid rgba(79, 140, 255, 0.2);
+      border-top-color: var(--accent-cyan);
+      border-right-color: var(--secondary-purple);
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* 3D Background Canvas */
+    #bg-3d-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* Mouse Spotlight */
+    #cursor-glow {
+      position: fixed;
+      width: 360px;
+      height: 360px;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 1;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(circle, rgba(79, 140, 255, 0.14) 0%, rgba(155, 107, 255, 0.06) 45%, transparent 70%);
+      transition: opacity 0.3s ease;
+    }
+
+    /* Navbar */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(14px);
+      background: rgba(11, 16, 32, 0.78);
+      border-bottom: 1px solid var(--border-glass);
+    }
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .brand {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 800;
+      font-size: 1.25rem;
+      color: var(--text-soft);
+      text-decoration: none;
+      letter-spacing: 0.06em;
+    }
+    .brand span {
+      background: linear-gradient(90deg, var(--primary-blue), var(--accent-cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+      flex-wrap: wrap;
+    }
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: color 0.25s ease;
+    }
+    .nav-links a:hover {
+      color: var(--accent-cyan);
+    }
+
+    /* Layout Container */
+    main {
+      position: relative;
+      z-index: 2;
+    }
+    section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 5.5rem 1.5rem;
+    }
+    .section-header {
+      text-align: center;
+      margin-bottom: 3.5rem;
+    }
+    .section-tag {
+      color: var(--accent-cyan);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      margin-top: 0.4rem;
+      background: linear-gradient(90deg, var(--text-soft), var(--primary-blue), var(--secondary-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Glass Card & Neon Border */
+    .glass-card {
+      background: var(--bg-surface);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--border-glass);
+      border-radius: 20px;
+      padding: 1.75rem;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.35);
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .glass-card:hover {
+      border-color: rgba(56, 214, 232, 0.65);
+      box-shadow: 0 14px 40px rgba(79, 140, 255, 0.18), 0 0 24px rgba(155, 107, 255, 0.12);
+    }
+
+    /* Hero Section */
+    .hero {
+      min-height: 86vh;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 3rem;
+      align-items: center;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.45rem 1rem;
+      border-radius: 999px;
+      background: rgba(79, 140, 255, 0.12);
+      border: 1px solid rgba(56, 214, 232, 0.35);
+      color: var(--accent-cyan);
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 1.25rem;
+    }
+    .hero h1 {
+      font-size: clamp(2.3rem, 5vw, 3.8rem);
+      line-height: 1.15;
+      margin-bottom: 0.75rem;
+    }
+    .hero-role {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--secondary-purple);
+      margin-bottom: 0.75rem;
+    }
+    .typing-wrap {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(1rem, 2.2vw, 1.35rem);
+      color: var(--accent-cyan);
+      min-height: 2rem;
+      margin-bottom: 1.25rem;
+    }
+    .hero p {
+      color: var(--text-muted);
+      max-width: 580px;
+      margin-bottom: 2rem;
+    }
+    .btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.85rem 1.6rem;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(135deg, var(--primary-blue), var(--secondary-purple));
+      box-shadow: 0 0 22px rgba(79, 140, 255, 0.4);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0 30px rgba(155, 107, 255, 0.55);
+    }
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.85rem 1.6rem;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 700;
+      color: var(--text-soft);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-glass);
+      transition: transform 0.25s ease, border-color 0.25s ease;
+    }
+    .btn-secondary:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent-cyan);
+    }
+
+    /* Hero Visual: Holographic Avatar + 3D Sphere Stage */
+    .hero-visual {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+    .holo-avatar-wrap {
+      position: relative;
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      padding: 6px;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--primary-blue), var(--secondary-purple));
+      box-shadow: 0 0 35px rgba(56, 214, 232, 0.45), 0 0 60px rgba(155, 107, 255, 0.25);
+    }
+    .holo-avatar-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      background: #0e162c;
+    }
+    #holo-sphere-mount {
+      width: 220px;
+      height: 150px;
+      border-radius: 16px;
+      border: 1px solid rgba(56, 214, 232, 0.25);
+      background: rgba(15, 23, 46, 0.45);
+      overflow: hidden;
+    }
+
+    /* Grids & Timelines */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.5rem;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.5rem;
+    }
+    .grid-5 {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .timeline {
+      border-left: 2px solid rgba(79, 140, 255, 0.45);
+      padding-left: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .timeline-item {
+      position: relative;
+    }
+    .timeline-item::before {
+      content: "";
+      position: absolute;
+      left: -1.92rem;
+      top: 0.35rem;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--accent-cyan);
+      box-shadow: 0 0 12px var(--accent-cyan);
+    }
+
+    .skill-meter {
+      height: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 0.75rem;
+    }
+    .skill-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--primary-blue), var(--secondary-purple), var(--accent-cyan));
+    }
+
+    .project-thumb {
+      height: 150px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(79, 140, 255, 0.16), rgba(155, 107, 255, 0.16));
+      border: 1px solid rgba(56, 214, 232, 0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 1.1rem;
+    }
+    .project-thumb i {
+      font-size: 2rem;
+      color: var(--accent-cyan);
+    }
+    .tech-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin: 0.9rem 0 1.2rem;
+    }
+    .tech-pill {
+      font-size: 0.72rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 8px;
+      background: rgba(79, 140, 255, 0.14);
+      border: 1px solid rgba(79, 140, 255, 0.3);
+      color: var(--text-soft);
+    }
+    .card-actions {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: auto;
+    }
+    .card-link {
+      flex: 1;
+      text-align: center;
+      padding: 0.6rem 0.8rem;
+      border-radius: 10px;
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 700;
+      border: 1px solid var(--border-glass);
+      color: var(--text-soft);
+      transition: background 0.25s ease, border-color 0.25s ease;
+    }
+    .card-link.primary {
+      background: linear-gradient(135deg, var(--primary-blue), var(--secondary-purple));
+      border: none;
+    }
+    .card-link:hover {
+      border-color: var(--accent-cyan);
+    }
+
+    /* Contact Form & Socials */
+    form input, form textarea {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      border-radius: 12px;
+      background: rgba(11, 16, 32, 0.8);
+      border: 1px solid var(--border-glass);
+      color: var(--text-soft);
+      font-family: inherit;
+      margin-bottom: 1rem;
+    }
+    form input:focus, form textarea:focus {
+      outline: none;
+      border-color: var(--accent-cyan);
+    }
+    .social-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.9rem;
+    }
+    .social-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      padding: 0.9rem 1rem;
+      border-radius: 14px;
+      text-decoration: none;
+      color: var(--text-soft);
+      background: rgba(11, 16, 32, 0.75);
+      border: 1px solid var(--border-glass);
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: border-color 0.25s ease, transform 0.25s ease;
+    }
+    .social-btn:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent-cyan);
+    }
+
+    /* Footer */
+    footer {
+      position: relative;
+      z-index: 2;
+      border-top: 1px solid var(--border-glass);
+      background: rgba(9, 13, 26, 0.9);
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      margin: 1rem 0;
+    }
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+    .footer-links a:hover {
+      color: var(--accent-cyan);
+    }
+
+    /* Reduced Motion Support */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+      #bg-3d-canvas, #holo-sphere-mount, #cursor-glow {
+        display: none;
+      }
+    }
+
+    @media (max-width: 960px) {
+      .hero { grid-template-columns: 1fr; text-align: center; }
+      .hero p, .btn-group, .hero-badge { margin-left: auto; margin-right: auto; justify-content: center; }
+      .grid-3, .grid-5 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 640px) {
+      .grid-2, .grid-3, .grid-5, .social-grid { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Preloader -->
+  <div id="preloader" aria-hidden="true">
+    <div class="loader-ring"></div>
+    <div class="brand">YOUSSEF<span>.DEV</span></div>
+  </div>
+
+  <!-- Three.js 3D Particle Network Background -->
+  <canvas id="bg-3d-canvas"></canvas>
+
+  <!-- Mouse Interactive Glow -->
+  <div id="cursor-glow" aria-hidden="true"></div>
+
+  <!-- Navbar -->
+  <header>
+    <div class="nav-inner">
+      <a href="#hero" class="brand">YOUSSEF<span>.DEV</span></a>
+      <ul class="nav-links">
+        <li><a href="#hero">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#education">Education</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero">
+      <div>
+        <div class="hero-badge">
+          <i class="fa-solid fa-microchip"></i> Future Cyber &amp; AI Portfolio
+        </div>
+        <h1>YOUSSEF RADY</h1>
+        <div class="hero-role">Aspiring Software Engineer</div>
+        <div class="typing-wrap" id="typing-text"></div>
+        <p>
+          Computer Science &amp; Artificial Intelligence student at Beni Suef University passionate about building clean software solutions, exploring AI systems, and strengthening cybersecurity fundamentals.
+        </p>
+        <div class="btn-group">
+          <a href="#contact" class="btn-primary">
+            Get In Touch <i class="fa-solid fa-arrow-right"></i>
+          </a>
+          <a href="#projects" class="btn-secondary">
+            View Projects <i class="fa-solid fa-folder-open"></i>
+          </a>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="holo-avatar-wrap" data-tilt data-tilt-max="8" data-tilt-glare data-tilt-max-glare="0.2">
+          <!-- استبدل src بصورتك الشخصية -->
+          <img src="images/profile.jpg" alt="Youssef Rady Holographic Avatar" loading="eager" />
+        </div>
+        <div id="holo-sphere-mount" title="Interactive 3D Holographic Sphere"></div>
+      </div>
+    </section>
+
+    <!-- About Me Section -->
+    <section id="about" class="reveal-section">
+      <div class="section-header">
+        <div class="section-tag">Identity &amp; Journey</div>
+        <h2 class="section-title">About Me</h2>
+      </div>
+
+      <div class="grid-2">
+        <div class="glass-card" data-tilt data-tilt-max="5">
+          <h3 class="mb-3" style="color: var(--accent-cyan);">Profile, Study &amp; Goals</h3>
+          <p style="color: var(--text-muted); margin-bottom: 1rem;">
+            I am an aspiring Software Engineer at the Faculty of Computers and Artificial Intelligence, Beni Suef University, focused on Software Engineering, Artificial Intelligence, and Cybersecurity.
+          </p>
+          <p style="color: var(--text-muted);">
+            <strong>Career Objective:</strong> To become a skilled Software Engineer, gain practical experience, and build innovative technology solutions.
+          </p>
+        </div>
+
+        <div class="glass-card" data-tilt data-tilt-max="5">
+          <h3 class="mb-3" style="color: var(--secondary-purple);">Development Timeline</h3>
+          <div class="timeline">
+            <div class="timeline-item">
+              <strong>Programming &amp; Problem Solving Foundations</strong>
+              <p style="color: var(--text-muted); font-size: 0.9rem;">Built core logic, algorithmic thinking, and structured coding habits.</p>
+            </div>
+            <div class="timeline-item">
+              <strong>Web &amp; Interactive Projects</strong>
+              <p style="color: var(--text-muted); font-size: 0.9rem;">Developed web interfaces, browser games, utilities, and live code tools.</p>
+            </div>
+            <div class="timeline-item">
+              <strong>Faculty of Computers &amp; AI — Beni Suef University</strong>
+              <p style="color: var(--text-muted); font-size: 0.9rem;">Advancing in Computer Science, AI concepts, and Cybersecurity practices.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Technical Skills Section -->
+    <section id="skills" class="reveal-section">
+      <div class="section-header">
+        <div class="section-tag">Capabilities</div>
+        <h2 class="section-title">Technical Skills</h2>
+      </div>
+      <div class="grid-5" id="skills-container"></div>
+    </section>
+
+    <!-- Projects Gallery -->
+    <section id="projects" class="reveal-section">
+      <div class="section-header">
+        <div class="section-tag">Selected Work</div>
+        <h2 class="section-title">Projects Gallery</h2>
+      </div>
+      <div class="grid-3" id="projects-container"></div>
+    </section>
+
+    <!-- Education & Certificates -->
+    <section id="education" class="reveal-section">
+      <div class="section-header">
+        <div class="section-tag">Academic &amp; Growth</div>
+        <h2 class="section-title">Education &amp; Certificates</h2>
+      </div>
+      <div class="glass-card" data-tilt data-tilt-max="4">
+        <div class="timeline">
+          <div class="timeline-item">
+            <span style="color: var(--accent-cyan); font-size: 0.8rem; font-weight: 700;">ACADEMIC DEGREE</span>
+            <h3 style="margin-top: 0.25rem;">B.Sc. in Computers &amp; Artificial Intelligence (In Progress)</h3>
+            <p style="color: var(--text-muted); font-size: 0.92rem;">Beni Suef University — Core coursework in programming, computer systems, data structures, and AI foundations.</p>
+          </div>
+          <div class="timeline-item">
+            <span style="color: var(--secondary-purple); font-size: 0.8rem; font-weight: 700;">COURSES &amp; TECHNICAL TRAINING</span>
+            <h3 style="margin-top: 0.25rem;">Self-Paced Web, Data &amp; Software Tracks</h3>
+            <p style="color: var(--text-muted); font-size: 0.92rem;">Continuous hands-on learning across HTML/CSS, JavaScript, Python, data analysis workflows, and security awareness.</p>
+          </div>
+          <div class="timeline-item">
+            <span style="color: var(--primary-blue); font-size: 0.8rem; font-weight: 700;">MILESTONES</span>
+            <h3 style="margin-top: 0.25rem;">Practical Project Portfolio &amp; Live Deployments</h3>
+            <p style="color: var(--text-muted); font-size: 0.92rem;">Shipped multiple interactive web tools, games, and educational concepts while refining clean engineering practices.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="reveal-section">
+      <div class="section-header">
+        <div class="section-tag">Connect</div>
+        <h2 class="section-title">Get In Touch</h2>
+      </div>
+
+      <div class="grid-2">
+        <div class="glass-card">
+          <h3 style="margin-bottom: 1rem;">Send a Message</h3>
+          <form id="contact-form">
+            <input type="text" name="name" placeholder="Your Name" required />
+            <input type="email" name="email" placeholder="Your Email" required />
+            <textarea name="message" rows="4" placeholder="Your Message..." required></textarea>
+            <button type="submit" class="btn-primary" style="border: none; cursor: pointer; width: 100%; justify-content: center;">
+              Send Message <i class="fa-solid fa-paper-plane"></i>
+            </button>
+            <p id="form-status" style="color: var(--accent-cyan); font-size: 0.88rem; margin-top: 0.75rem;"></p>
+          </form>
+        </div>
+
+        <div class="glass-card">
+          <h3 style="margin-bottom: 1rem;">Direct Channels</h3>
+          <div class="social-grid">
+            <!-- واتساب بدون إظهار الرقم -->
+            <a href="https://wa.me/201101850134" target="_blank" rel="noopener noreferrer" class="social-btn">
+              <i class="fa-brands fa-whatsapp" style="color: var(--accent-cyan);"></i> WhatsApp
+            </a>
+            <!-- فيسبوك -->
+            <a href="https://www.facebook.com/share/1FAF3ZAWCY/" target="_blank" rel="noopener noreferrer" class="social-btn">
+              <i class="fa-brands fa-facebook-f" style="color: var(--primary-blue);"></i> Facebook
+            </a>
+            <!-- إنستغرام بدون إظهار اسم المستخدم -->
+            <a href="https://www.instagram.com/youssef_joo039/" target="_blank" rel="noopener noreferrer" class="social-btn">
+              <i class="fa-brands fa-instagram" style="color: var(--secondary-purple);"></i> Instagram
+            </a>
+            <!-- لينكدإن -->
+            <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer" class="social-btn">
+              <i class="fa-brands fa-linkedin-in" style="color: var(--primary-blue);"></i> LinkedIn
+            </a>
+            <!-- تيك توك -->
+            <a href="https://www.tiktok.com/@youssefjoo824" target="_blank" rel="noopener noreferrer" class="social-btn" style="grid-column: 1 / -1; justify-content: center;">
+              <i class="fa-brands fa-tiktok" style="color: var(--accent-cyan);"></i> TikTok
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="brand">YOUSSEF<span>.DEV</span></div>
+    <div class="footer-links">
+      <a href="#hero">Home</a>
+      <a href="#about">About</a>
+      <a href="#skills">Skills</a>
+      <a href="#projects">Projects</a>
+      <a href="#education">Education</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <p>© 2026 YOUSSEF.DEV. All rights reserved.</p>
+    <p style="color: var(--accent-cyan); font-weight: 600; margin-top: 0.4rem;">Designed &amp; Developed by Youssef Rady</p>
+  </footer>
+
+  <script>
+    // Preloader hide
+    window.addEventListener('load', () => {
+      setTimeout(() => document.getElementById('preloader').classList.add('hidden'), 600);
+    });
+
+    // Mouse spotlight
+    const glow = document.getElementById('cursor-glow');
+    window.addEventListener('mousemove', (e) => {
+      glow.style.left = `${e.clientX}px`;
+      glow.style.top = `${e.clientY}px`;
+    });
+
+    // Typing Animation
+    const roles = [
+      'Software Engineer.',
+      'Frontend Developer.',
+      'AI Enthusiast.',
+      'Cybersecurity Enthusiast.',
+    ];
+    const typingEl = document.getElementById('typing-text');
+    let roleIdx = 0, charIdx = 0, deleting = false;
+    function typeLoop() {
+      const current = roles[roleIdx];
+      typingEl.textContent = deleting ? current.slice(0, --charIdx) : current.slice(0, ++charIdx);
+      let delay = deleting ? 55 : 95;
+      if (!deleting && charIdx === current.length) {
+        delay = 1400;
+        deleting = true;
+      } else if (deleting && charIdx === 0) {
+        deleting = false;
+        roleIdx = (roleIdx + 1) % roles.length;
+        delay = 350;
+      }
+      setTimeout(typeLoop, delay);
+    }
+    typeLoop();
+
+    // Skills Data
+    const skillsData = [
+      { name: 'Python', level: 82, icon: 'fa-brands fa-python' },
+      { name: 'C++', level: 80, icon: 'fa-solid fa-code' },
+      { name: 'HTML', level: 92, icon: 'fa-brands fa-html5' },
+      { name: 'CSS', level: 88, icon: 'fa-brands fa-css3-alt' },
+      { name: 'JavaScript', level: 82, icon: 'fa-brands fa-js' },
+      { name: 'React', level: 70, icon: 'fa-brands fa-react' },
+      { name: 'SQL', level: 72, icon: 'fa-solid fa-database' },
+      { name: 'Data Structures & Algorithms', level: 76, icon: 'fa-solid fa-diagram-project' },
+      { name: 'Artificial Intelligence', level: 74, icon: 'fa-solid fa-brain' },
+      { name: 'Cybersecurity', level: 75, icon: 'fa-solid fa-shield-halved' },
+    ];
+    const skillsContainer = document.getElementById('skills-container');
+    skillsData.forEach((s) => {
+      skillsContainer.innerHTML += `
+        <div class="glass-card" data-tilt data-tilt-max="8">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <i class="${s.icon}" style="color:var(--accent-cyan); font-size:1.25rem;"></i>
+            <span style="font-size:0.82rem; font-weight:700; color:var(--secondary-purple);">${s.level}%</span>
+          </div>
+          <div style="font-weight:700; font-size:0.95rem; margin-top:0.65rem;">${s.name}</div>
+          <div class="skill-meter"><div class="skill-fill" style="width:${s.level}%"></div></div>
+        </div>
+      `;
+    });
+
+    // Projects Data
+    const projectsData = [
+      { title: 'Youssef Rady Portfolio Website', icon: 'fa-user-astronaut', desc: 'Personal developer portfolio presenting identity, skills, projects, and academic path.', tech: ['HTML5', 'CSS3', 'JavaScript'], demo: '#hero', repo: '#' },
+      { title: 'Hope Cohort', icon: 'fa-users', desc: 'Community-driven initiative and web space built around connection and shared goals.', tech: ['HTML5', 'CSS3', 'UI Design'], demo: '#', repo: '#' },
+      { title: 'Work for Your Hereafter', icon: 'fa-moon', desc: 'Purposeful web project dedicated to daily reminders and reflective content.', tech: ['HTML5', 'CSS3', 'JavaScript'], demo: '#', repo: '#' },
+      { title: 'Runner Game', icon: 'fa-person-running', desc: 'Interactive endless runner browser game with dynamic obstacles and score logic.', tech: ['JavaScript', 'Canvas', 'CSS3'], demo: '#', repo: '#' },
+      { title: 'Quiz Game', icon: 'fa-circle-question', desc: 'Interactive quiz application with question flow, scoring, and instant feedback.', tech: ['JavaScript', 'HTML5', 'CSS3'], demo: '#', repo: '#' },
+      { title: 'PDF Translator', icon: 'fa-file-pdf', desc: 'Utility tool workflow for extracting and translating PDF document content.', tech: ['Python', 'Web UI', 'Automation'], demo: '#', repo: '#' },
+      { title: 'Online Code Editor & Live Preview', icon: 'fa-laptop-code', desc: 'Browser playground for writing code and previewing live output immediately.', tech: ['JavaScript', 'HTML5', 'CSS3'], demo: '#', repo: '#' },
+      { title: 'Youssef Code Academy', icon: 'fa-graduation-cap', desc: 'Educational coding hub structured to share learning notes and programming guides.', tech: ['Web', 'Education', 'UI'], demo: '#', repo: '#' },
+    ];
+    const projectsContainer = document.getElementById('projects-container');
+    projectsData.forEach((p) => {
+      projectsContainer.innerHTML += `
+        <div class="glass-card" style="display:flex; flex-direction:column;" data-tilt data-tilt-max="7" data-tilt-glare data-tilt-max-glare="0.15">
+          <div class="project-thumb">
+            <i class="fa-solid ${p.icon}"></i>
+            <span style="font-size:0.72rem; color:var(--text-muted); letter-spacing:0.08em;">PROJECT PREVIEW</span>
+          </div>
+          <h3>${p.title}</h3>
+          <p style="color:var(--text-muted); font-size:0.9rem; margin-top:0.4rem;">${p.desc}</p>
+          <div class="tech-pills">${p.tech.map((t) => `<span class="tech-pill">${t}</span>`).join('')}</div>
+          <div class="card-actions">
+            <a href="${p.demo}" class="card-link primary">Live Demo</a>
+            <a href="${p.repo}" class="card-link">Project Link</a>
+          </div>
+        </div>
+      `;
+    });
+
+    // Contact form feedback
+    document.getElementById('contact-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      document.getElementById('form-status').textContent = 'Message prepared locally. Connect Formspree/EmailJS to receive live submissions.';
+      e.target.reset();
+    });
+
+    // GSAP Scroll Reveal
+    if (window.gsap && window.ScrollTrigger) {
+      gsap.registerPlugin(ScrollTrigger);
+      gsap.utils.toArray('.reveal-section').forEach((sec) => {
+        gsap.from(sec, {
+          opacity: 0,
+          y: 28,
+          duration: 0.75,
+          ease: 'power2.out',
+          scrollTrigger: { trigger: sec, start: 'top 84%', once: true },
+        });
+      });
+    }
+
+    // Three.js 3D Particle Network + Holographic Sphere
+    if (window.THREE) {
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!reducedMotion) {
+        const bgCanvas = document.getElementById('bg-3d-canvas');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
+        camera.position.z = 6;
+        const renderer = new THREE.WebGLRenderer({ canvas: bgCanvas, alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+        const count = 140;
+        const positions = new Float32Array(count * 3);
+        for (let i = 0; i < count * 3; i += 3) {
+          positions[i] = (Math.random() - 0.5) * 14;
+          positions[i + 1] = (Math.random() - 0.5) * 10;
+          positions[i + 2] = (Math.random() - 0.5) * 8;
+        }
+        const geo = new THREE.BufferGeometry();
+        geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        const mat = new THREE.PointsMaterial({ color: 0x38D6E8, size: 0.06, transparent: true, opacity: 0.65 });
+        const points = new THREE.Points(geo, mat);
+        scene.add(points);
+
+        const mount = document.getElementById('holo-sphere-mount');
+        const sScene = new THREE.Scene();
+        const sCam = new THREE.PerspectiveCamera(45, mount.clientWidth / mount.clientHeight, 0.1, 20);
+        sCam.position.z = 3.2;
+        const sRen = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        sRen.setSize(mount.clientWidth, mount.clientHeight);
+        mount.appendChild(sRen.domElement);
+
+        const sphereGeo = new THREE.IcosahedronGeometry(1.05, 1);
+        const sphereMat = new THREE.MeshBasicMaterial({ color: 0x9B6BFF, wireframe: true, transparent: true, opacity: 0.75 });
+        const holoSphere = new THREE.Mesh(sphereGeo, sphereMat);
+        sScene.add(holoSphere);
+
+        const coreGeo = new THREE.OctahedronGeometry(0.45, 0);
+        const coreMat = new THREE.MeshBasicMaterial({ color: 0x38D6E8, wireframe: true });
+        const coreShape = new THREE.Mesh(coreGeo, coreMat);
+        sScene.add(coreShape);
+
+        let targetX = 0, targetY = 0;
+        window.addEventListener('mousemove', (e) => {
+          targetX = (e.clientX / window.innerWidth - 0.5) * 1.2;
+          targetY = (e.clientY / window.innerHeight - 0.5) * 1.2;
+        });
+
+        window.addEventListener('resize', () => {
+          camera.aspect = window.innerWidth / window.innerHeight;
+          camera.updateProjectionMatrix();
+          renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        function render3D() {
+          points.rotation.y += 0.0012;
+          points.rotation.x += (targetY * 0.15 - points.rotation.x) * 0.03;
+          points.rotation.y += (targetX * 0.15) * 0.01;
+
+          holoSphere.rotation.y += 0.008 + targetX * 0.01;
+          holoSphere.rotation.x += 0.005 + targetY * 0.01;
+          coreShape.rotation.y -= 0.014;
+          coreShape.rotation.z += 0.01;
+
+          renderer.render(scene, camera);
+          sRen.render(sScene, sCam);
+          requestAnimationFrame(render3D);
+        }
+        render3D();
+      }
+    }
+  </script>
+</body>
+</html>
